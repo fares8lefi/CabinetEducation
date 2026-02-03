@@ -3,9 +3,11 @@ var express = require('express');
 var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
-
+const http = require('http');
+const { connectToDb } = require("./config/db");
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
+require('dotenv').config();
 
 var app = express();
 
@@ -37,5 +39,12 @@ app.use(function(err, req, res, next) {
   res.status(err.status || 500);
   res.render('error');
 });
+
+const server = http.createServer(app)
+
+server.listen(process.env.PORT,async ()=>{
+  await connectToDb()
+  console.log(`Server is running on port 3000`);
+})
 
 module.exports = app;
